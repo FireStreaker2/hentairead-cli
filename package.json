@@ -1,0 +1,30 @@
+{
+	"name": "hentairead-cli",
+	"version": "1.0.0",
+	"description": "CLI tool to quickly interact with hentairead.com",
+	"main": "index.js",
+	"bin": {
+		"hentai": "./index.js"
+	},
+	"type": "module",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/FireStreaker2/hentairead-cli.git"
+	},
+	"keywords": [
+		"hentai",
+		"cli"
+	],
+	"author": "FireStreaker2",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/FireStreaker2/hentairead-cli/issues"
+	},
+	"homepage": "https://github.com/FireStreaker2/hentairead-cli#readme",
+	"dependencies": {
+		"chalk": "^5.3.0",
+		"commander": "^11.1.0",
+		"hentairead-js": "^1.0.1",
+		"node-fetch": "^3.3.2"
+	}
+}
