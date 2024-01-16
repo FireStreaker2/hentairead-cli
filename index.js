@@ -1,9 +1,10 @@
-#! /usr/bin/env node
-import HentaiRead from "hentairead-js";
-import chalk from "chalk";
-import { program } from "commander";
+#!/usr/bin/env node
 import fs from "fs";
 import fetch from "node-fetch";
+import { program } from "commander";
+import HentaiRead from "hentairead-js";
+import progress from "cli-progress";
+import chalk from "chalk";
 
 program
 	.name("hentai")
@@ -16,6 +17,9 @@ program
 	.argument("<string>", "doujin to search for")
 	.action(async (doujin) => {
 		const data = await HentaiRead.getPages(doujin);
+
+		const bar = new progress.SingleBar({}, progress.Presets.shades_classic);
+		bar.start(data.length, 0);
 
 		for (let i = 0; i < data.length; i++) {
 			const image = data[i];
@@ -34,8 +38,15 @@ program
 				new Uint8Array(buffer)
 			);
 
-			console.log(`Downloaded image ${chalk.red(i + 1)} of ${data.length}`);
+			bar.increment();
 		}
+
+		bar.stop();
+		console.log(
+			`Succesfully downloaded ${chalk.red(
+				data.length
+			)} pages. Now available at ${chalk.bold(`./${doujin}`)}`
+		);
 	});
 
 program
@@ -44,7 +55,34 @@ program
 	.argument("<string>", "doujin to search for")
 	.action(async (doujin) => {
 		const data = await HentaiRead.getInfo(doujin);
+
 		console.log(data);
+	});
+
+program
+	.command("search")
+	.description("Search for a doujin")
+	.argument("<string>", "doujin to search for")
+	.option("--page <number>")
+	.action(async (doujin, options) => {
+		const data = await HentaiRead.search({
+			s: doujin,
+			page: options.page ?? 1,
+		});
+
+		console.log(
+			`Results for ${chalk.bold(doujin)}: page ${chalk.bold(options.page ?? 1)}`
+		);
+
+		for (let i = 0; i < data.length; i++) {
+			const doujin = data[i];
+
+			console.log(
+				`[${i}] ${chalk.bold(
+					doujin.href.split("/hentai/")[1].replace("/", "")
+				)} (${doujin.views} Views)`
+			);
+		}
 	});
 
 program.parse();
