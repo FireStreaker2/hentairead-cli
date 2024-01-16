@@ -5,6 +5,7 @@ import { program } from "commander";
 import HentaiRead from "hentairead-js";
 import progress from "cli-progress";
 import chalk from "chalk";
+import terminalImage from "terminal-image";
 
 program
 	.name("hentai")
@@ -12,11 +13,40 @@ program
 	.version("1.0.0");
 
 program
+	.command("config")
+	.description("See and set your configuration")
+	.option("-k, --key <string>", "Key to edit")
+	.option("-v, --value <string>", "New value")
+	.action((options) => {
+		const data = fs.readFileSync("settings.json", "utf-8");
+		const settings = JSON.parse(data);
+
+		if (options.key && options.value) {
+			settings[options.key] = options.value;
+			fs.writeFileSync(
+				"settings.json",
+				JSON.stringify(settings, null, 2),
+				"utf-8"
+			);
+
+			console.log(
+				`Succesfully updated ${chalk.bold(options.key)} to value ${chalk.bold(
+					options.value
+				)}`
+			);
+		} else {
+			console.log(settings);
+		}
+	});
+
+program
 	.command("download")
 	.description("Download a doujin locally")
 	.argument("<string>", "doujin to search for")
 	.action(async (doujin) => {
 		const data = await HentaiRead.getPages(doujin);
+
+		console.log(`Now downloading: ${chalk.bold(doujin)}`);
 
 		const bar = new progress.SingleBar({}, progress.Presets.shades_classic);
 		bar.start(data.length, 0);
@@ -56,7 +86,18 @@ program
 	.action(async (doujin) => {
 		const data = await HentaiRead.getInfo(doujin);
 
-		console.log(data);
+		console.log(chalk.bold(data.name));
+		console.log(data.alt);
+		console.log(
+			`Rating: ${data.rating}\nPages: ${data.pages}\nViews: ${data.views}`
+		);
+		console.log(`Tags: ${data.tags.join(", ")}`);
+		console.log(`Language: ${data.language}\nGenre: ${data.genre}`);
+
+		const settingsData = fs.readFileSync("settings.json", "utf-8");
+		const settings = JSON.parse(settingsData);
+		if (settings.showImage === "true")
+			console.log(await terminalImage.buffer(Object.values(data.images)[0]));
 	});
 
 program
@@ -74,6 +115,9 @@ program
 			`Results for ${chalk.bold(doujin)}: page ${chalk.bold(options.page ?? 1)}`
 		);
 
+		const settingsData = fs.readFileSync("settings.json", "utf-8");
+		const settings = JSON.parse(settingsData);
+
 		for (let i = 0; i < data.length; i++) {
 			const doujin = data[i];
 
@@ -82,6 +126,11 @@ program
 					doujin.href.split("/hentai/")[1].replace("/", "")
 				)} (${doujin.views} Views)`
 			);
+
+			if (settings.showImage === "true")
+				console.log(
+					await terminalImage.buffer(Object.values(doujin.images)[0])
+				);
 		}
 	});
 
