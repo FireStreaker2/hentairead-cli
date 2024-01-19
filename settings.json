@@ -1,3 +1,5 @@
 {
-  "showImage": "false"
+  "showImage": "false",
+  "discordRpc": "true",
+  "discordRpcID": "1197355953650143322"
 }

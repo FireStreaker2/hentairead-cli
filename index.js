@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 import fs from "fs";
 import fetch from "node-fetch";
-import { program } from "commander";
 import HentaiRead from "hentairead-js";
+import { program } from "commander";
+import { Client } from "discord-rpc";
 import progress from "cli-progress";
 import chalk from "chalk";
 import terminalImage from "terminal-image";
+import open from "open";
 
 program
 	.name("hentai")
@@ -132,6 +134,34 @@ program
 					await terminalImage.buffer(Object.values(doujin.images)[0])
 				);
 		}
+	});
+
+program
+	.command("view")
+	.description("View a doujin locally")
+	.argument("<string>", "doujin to view")
+	.action(async (doujin) => {
+		const settingsData = fs.readFileSync("settings.json", "utf-8");
+		const settings = JSON.parse(settingsData);
+
+		let rpc;
+
+		if (settings.discordRpc === "true") {
+			rpc = new Client({ transport: "ipc" });
+
+			await rpc.login({ clientId: settings.discordRpcID });
+
+			await rpc.setActivity({
+				details: `Reading ${doujin.split("/").slice(-2, -1)[0]}`,
+				startTimestamp: Date.now(),
+				largeImageKey: "logo",
+				instance: false,
+			});
+		}
+
+		await open(doujin, { wait: true });
+
+		if (settings.discordRpc === "true") rpc.destroy();
 	});
 
 program.parse();
