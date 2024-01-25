@@ -20,13 +20,16 @@ program
 	.option("-k, --key <string>", "Key to edit")
 	.option("-v, --value <string>", "New value")
 	.action((options) => {
-		const data = fs.readFileSync("settings.json", "utf-8");
+		const data = fs.readFileSync(
+			new URL("./settings.json", import.meta.url),
+			"utf-8"
+		);
 		const settings = JSON.parse(data);
 
 		if (options.key && options.value) {
 			settings[options.key] = options.value;
 			fs.writeFileSync(
-				"settings.json",
+				new URL("./settings.json", import.meta.url),
 				JSON.stringify(settings, null, 2),
 				"utf-8"
 			);
@@ -96,7 +99,10 @@ program
 		console.log(`Tags: ${data.tags.join(", ")}`);
 		console.log(`Language: ${data.language}\nGenre: ${data.genre}`);
 
-		const settingsData = fs.readFileSync("settings.json", "utf-8");
+		const settingsData = fs.readFileSync(
+			new URL("./settings.json", import.meta.url),
+			"utf-8"
+		);
 		const settings = JSON.parse(settingsData);
 		if (settings.showImage === "true")
 			console.log(await terminalImage.buffer(Object.values(data.images)[0]));
@@ -117,7 +123,10 @@ program
 			`Results for ${chalk.bold(doujin)}: page ${chalk.bold(options.page ?? 1)}`
 		);
 
-		const settingsData = fs.readFileSync("settings.json", "utf-8");
+		const settingsData = fs.readFileSync(
+			new URL("./settings.json", import.meta.url),
+			"utf-8"
+		);
 		const settings = JSON.parse(settingsData);
 
 		for (let i = 0; i < data.length; i++) {
@@ -141,7 +150,10 @@ program
 	.description("View a doujin locally")
 	.argument("<string>", "doujin to view")
 	.action(async (doujin) => {
-		const settingsData = fs.readFileSync("settings.json", "utf-8");
+		const settingsData = fs.readFileSync(
+			new URL("./settings.json", import.meta.url),
+			"utf-8"
+		);
 		const settings = JSON.parse(settingsData);
 
 		let rpc;
