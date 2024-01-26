@@ -59,5 +59,16 @@ hentairead-cli comes with a ``settings.json`` file used for customizing the outp
 }
 ```
 
+### Custom Discord RPC Application
+To customize the name of the Discord Rich Prescence, you can make your own application via the [Discord Developer Panel](https://discord.com/developers). An example can be found [here](https://discord.com/developers/docs/getting-started).
+
+> Note that you do not need to make a bot, you can just copy the client ID.
+
+### Editing the configuration
+Currently, there are two ways to edit the configuration. You can either edit the file directly, or you can use the ``config`` command. For example:  
+```bash
+$ hentai config -k showImage -v false
+```
+
 # License
 [MIT](https://github.com/FireStreaker2/hentairead-cli/blob/main/README.md)
