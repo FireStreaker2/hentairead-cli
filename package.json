@@ -1,6 +1,6 @@
 {
 	"name": "hentairead-cli",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "CLI tool to quickly interact with hentairead.com",
 	"main": "index.js",
 	"bin": {

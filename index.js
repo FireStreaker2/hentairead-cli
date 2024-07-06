@@ -66,10 +66,7 @@ program
 
 			const buffer = await response.arrayBuffer();
 			await fs.promises.writeFile(
-				`./${doujin}/${i}.${image.substring(
-					image.lastIndexOf(".") + 1,
-					image.lastIndexOf("?")
-				)}`,
+				`./${doujin}/${i}.${image.substring(image.lastIndexOf(".") + 1)}`,
 				new Uint8Array(buffer)
 			);
 
