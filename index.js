@@ -12,7 +12,7 @@ import open from "open";
 program
 	.name("hentai")
 	.description("CLI tool to quickly interact with hentairead.com")
-	.version("1.0.0");
+	.version("1.0.3");
 
 program
 	.command("config")
@@ -58,7 +58,9 @@ program
 
 		for (let i = 0; i < data.length; i++) {
 			const image = data[i];
-			const response = await fetch(image);
+			const response = await fetch(image, {
+				referrer: "https://hentairead.com/",
+			});
 
 			if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 
